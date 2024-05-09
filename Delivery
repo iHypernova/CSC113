@@ -1,0 +1,22 @@
+public class Delivery extends Order {
+    private String appName;
+    private String driver;
+
+    public Delivery(String restruant, String customerName, int totalItems, double totalAmount,String appName, String driver) {
+        super(restruant ,customerName, totalItems, totalAmount);
+        this.appName = appName;
+        this.driver=driver;
+        
+    }
+
+    public void printOrder() {
+        super.printOrder();
+        System.out.println("Delivery App: " + appName);
+        System.out.println("Driver: "+driver);
+    }
+    
+    
+    public String getDriver() {
+        return driver;
+    }
+}
