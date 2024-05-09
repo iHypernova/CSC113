@@ -1,0 +1,80 @@
+public class Restaurant {
+	
+	
+
+	 private String name;
+	    private Order[] orders;
+	    private  int ordersCount;
+
+	    public Restaurant(String name){
+	        this.name = name;
+	        orders = new Order[2000];
+	        ordersCount = 0;
+	    }
+	    public Restaurant(Restaurant r) {
+	    	this.name=r.name;
+	    	this.orders =r.orders;
+	        this.ordersCount=r.ordersCount;
+	    	
+	    }
+	    
+	    
+	    public int getOrdersCount() {
+			return ordersCount;
+		}
+		public String getName() {
+			return name;
+		}
+		public boolean equals(String r) {
+	    	if(name.equalsIgnoreCase(r))
+	    		return true;
+	    	return false;
+	    	
+	    }
+	    
+	    public int SearchOrder(Order o) {
+	    	for(int i=0;i<ordersCount;i++) 
+	    		if(orders[i].equals(o))
+	    			return i;
+	    	return -1;
+	    		
+	    }
+	    public boolean removeOrder(Order o) {
+	        int index = SearchOrder(o); 
+	        if (index != -1) { 
+	            for (int i = index; i < ordersCount - 1; i++) {
+	                orders[i] = orders[i + 1]; 
+	            }
+	            ordersCount--; 
+	            return true; 
+	        }
+	        return false;
+	    }
+
+	    public boolean addOrder(Order o) {
+	        if (ordersCount == 1000) {
+	            return false;
+	        }
+	        orders[ordersCount++] = o;
+	        return true;
+	    }
+	    public Order findOrder(String customerName) {
+	        for (int i = 0; i < ordersCount; i++) {
+	            if (orders[i].getCustomerName().equalsIgnoreCase(customerName)) {
+	                return orders[i];
+	            }
+	        }
+	        return null;
+	    }
+	    public double averageOrder() {
+	        if (ordersCount == 0) {
+	            return 0.0;
+	        }
+	        double total = 0;
+	        for (int i = 0; i < ordersCount; i++) {
+	            total += orders[i].getTotalAmount();
+	        }
+	        return total / ordersCount;
+	    }
+	
+}
