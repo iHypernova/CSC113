@@ -1,0 +1,58 @@
+public abstract class Order {
+	private static final int MAX_ORDERS = 10000;
+    private static Order[] orderList = new Order[MAX_ORDERS];
+    private static int orderCount = 0;
+    private String customerName;
+    private int totalItems;
+    private double totalAmount;
+    private String restruant;
+    
+
+    public Order(String restruant, String customerName, int totalItems, double totalAmount) {
+        this.customerName = customerName;
+        this.totalItems = totalItems;
+        this.totalAmount = totalAmount;
+        this.restruant=restruant;
+        orderList[orderCount++] = this;
+    }
+
+    public static String[] searchOrderByWorker(String Worker) {
+        String[] ordersByWorker = new String[orderCount];
+        int index = 0;
+        for (int i = 0; i < orderCount; i++) {
+            Order currentOrder = orderList[i];
+                if (currentOrder instanceof InStore) {
+                	 if (((InStore) currentOrder).getCashierName()!=null) 
+                		ordersByWorker[index++] = "In-store order by " + ((InStore) currentOrder).getCashierName();
+              } else if (currentOrder instanceof Delivery) {
+            	  if (((Delivery)currentOrder).getDriver() != null) 
+                	ordersByWorker[index++] = "Delivery by " + ((Delivery)currentOrder).getDriver();
+                }
+            
+        }
+        return ordersByWorker;
+    }
+    
+	public void printOrder() {
+        System.out.println("Order Details:");
+        System.out.println("Customer Name: " + customerName);
+        System.out.println("Total Items: " + totalItems);
+        System.out.println("Total Amount: SAR" + totalAmount);
+        System.out.println("Order Number: "+ orderCount);
+    }
+	
+    
+
+
+    public static int getOrderCount() {
+		return orderCount;
+	}
+
+	public String getCustomerName() {
+		return customerName;
+	}
+
+	public double getTotalAmount() {
+        return totalAmount;
+    }
+}
