@@ -1,0 +1,42 @@
+public class Company {
+	
+	 	private String name;
+	    private Restaurant[] restaurants;
+	    private int restaurantCount;
+
+	    public Company(String name) {
+	        this.name = name;
+	        restaurants = new Restaurant[5];
+	    }
+
+	    public int searchRestaurant(Restaurant r) {
+	        for(int i=0;i<restaurantCount;i++)
+	        	if(restaurants[i].equals(r))
+	        		return i;
+	        return -1; 
+	    }
+	    public Restaurant findRestaurant(String restaurantName) {
+	        for (int i = 0; i < restaurantCount; i++) {
+	            if (restaurants[i].getName().equalsIgnoreCase(restaurantName)) {
+	                return restaurants[i];
+	            }
+	        }
+	        return null;
+	    }
+
+	    public boolean addRestaurant(Restaurant r) {
+	        if(searchRestaurant(r)!=-1 || restaurantCount == restaurants.length)
+	        	return false; 
+	        else
+	        	restaurants[restaurantCount++] = new Restaurant(r);
+	        return true;
+	        	
+	    }
+	    public Restaurant getRestaurant(int index) {
+	        if (index >= 0 && index < restaurantCount) {
+	            return restaurants[index];
+	        } else {
+	            return null; // Return null if the index is out of bounds
+	        }
+	    }
+	    
