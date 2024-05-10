@@ -142,7 +142,7 @@ public class Main {
 	            }
 	        }
 	        try {
-	        c.SaveToFile("‪C:\\Users\\ssssg\\Documents\\File.txt");
+	        c.SaveToFile("file name");\\we should write the link
 	        }catch(IOException e) {
 	        	e.printStackTrace();
 	        }
