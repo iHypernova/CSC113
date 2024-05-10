@@ -1,3 +1,5 @@
+package project;
+import java.io.*;
 import java.util.Scanner;
 public class Main {
 	    public static void main(String[] args) {
@@ -90,6 +92,7 @@ public class Main {
 	                    }
 	                    selectedRestaurant.addOrder(order);
 	                    System.out.println("Order added successfully!");
+	               
 	                } else {
 	                    System.out.println("Restaurant not found.");
 	                }
@@ -138,7 +141,11 @@ public class Main {
 	                    System.out.println("Invalid choice. Please enter a number from 1 to 5.");
 	            }
 	        }
-
+	        try {
+	        c.SaveToFile("‪C:\\Users\\ssssg\\Documents\\File.txt");
+	        }catch(IOException e) {
+	        	e.printStackTrace();
+	        }
 	        input.close(); 
 	    }
 	}
