@@ -37,6 +37,36 @@ public class Company {
 	            return restaurants[index];
 	        } else {
 	            return null; // Return null if the index is out of bounds
-	        }
+	      public void SaveToFile(String file) throws IOException {
+	    	File f = new File(file);
+	    	FileOutputStream R1 = new FileOutputStream(f);
+	    	ObjectOutputStream R2 = new ObjectOutputStream(R1);
+	    	for(int i=0;i<restaurantCount;i++)
+	    			R2.writeObject(restaurants[i]);
+	    			R1.close();
+	    			R2.close();
 	    }
+	    public void LoadFromfile(String file) throws IOException{  
+	        File f=new File(file);  
+	        FileInputStream r1= new FileInputStream(f);  
+	        ObjectInputStream r2=new ObjectInputStream(r1);  
+	        try {  
+	        while(true) {  
+	        try {  
+	        	Restaurant R=(Restaurant)r2.readObject();  
+	        
+	        }catch(ClassNotFoundException e) {  
+	            System.out.println(e);  
+	          
+	        }}  
+	          
+	    }catch(EOFException e) {  
+	        System.out.println(e);  
+	       r1.close();
+	       r2.close();
+	    }  
+	          
+	    }}
+		
+	
 	    
