@@ -1,0 +1,128 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.io.*;
+
+public class RestaurantGUI {
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            RestaurantInputFrame inputFrame = new RestaurantInputFrame();
+            inputFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            inputFrame.setVisible(true);
+        });
+    }
+}
+
+class RestaurantInputFrame extends JFrame {
+    private JTextField nameField;
+    private JTextArea resultArea;
+
+    public RestaurantInputFrame() {
+        super("Restaurant Management System");
+        setSize(400, 200);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        JPanel inputPanel = new JPanel();
+        inputPanel.setLayout(new GridLayout(2, 2));
+        inputPanel.add(new JLabel("Restaurant Name:"));
+        nameField = new JTextField();
+        inputPanel.add(nameField);
+
+        JButton submitButton = new JButton("Add Restaurant");
+        submitButton.addActionListener(this::addRestaurant);
+        inputPanel.add(submitButton);
+
+        resultArea = new JTextArea(10, 30);
+        resultArea.setEditable(false);
+
+        getContentPane().setLayout(new BorderLayout());
+        getContentPane().add(inputPanel, BorderLayout.NORTH);
+        getContentPane().add(new JScrollPane(resultArea), BorderLayout.CENTER);
+    }
+
+    private void addRestaurant(ActionEvent e) {
+        String name = nameField.getText().trim();
+        if (!name.isEmpty()) {
+            Company company = new Company("MyCompany");
+            try {
+                company.addRestaurant(new Restaurant(name));
+                resultArea.setText("Restaurant '" + name + "' added successfully.");
+            } catch (RestaurantException ex) {
+                resultArea.setText("Error: " + ex.getMessage());
+            }
+        } else {
+            resultArea.setText("Please enter a valid restaurant name.");
+        }
+    }
+}
+
+class RestaurantDisplayFrame extends JFrame {
+    private JTextArea displayArea;
+
+    public RestaurantDisplayFrame(String title, String displayText) {
+        super(title);
+        setSize(400, 300);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+        displayArea = new JTextArea(15, 30);
+        displayArea.setEditable(false);
+        displayArea.setText(displayText);
+
+        getContentPane().add(new JScrollPane(displayArea), BorderLayout.CENTER);
+    }
+}
+
+class Company {
+    private String name;
+    private Restaurant[] restaurants;
+    private int restaurantCount;
+
+    public Company(String name) {
+        this.name = name;
+        this.restaurants = new Restaurant[5];
+    }
+
+    public void addRestaurant(Restaurant r) throws RestaurantException {
+        if (restaurantCount < restaurants.length) {
+            restaurants[restaurantCount++] = r;
+        } else {
+            throw new RestaurantException("Cannot add more restaurants. Company is at full capacity.");
+        }
+    }
+
+    public Restaurant getRestaurant(int index) {
+        if (index >= 0 && index < restaurantCount) {
+            return restaurants[index];
+        }
+        return null;
+    }
+
+    public void saveToFile(String fileName) {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(fileName))) {
+            for (int i = 0; i < restaurantCount; i++) {
+                writer.println(restaurants[i].getName());
+            }
+            System.out.println("Restaurant data saved to file: " + fileName);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+class Restaurant {
+    private String name;
+
+    public Restaurant(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+}
+
+class RestaurantException extends Exception {
+    public RestaurantException(String message) {
+        super(message);
+    }
+}
