@@ -1,4 +1,5 @@
-package project;
+import java.lang.IllegalArgumentException;
+import java.util.InputMismatchException;
 import java.io.*;
 import java.util.Scanner;
 public class Main {
@@ -31,121 +32,137 @@ public class Main {
 	            System.out.println("5-Exit");
 	            System.out.println("---------------------------------------");
 	            System.out.print("Enter the number of the operation you want to perform: ");
-	            int choice = input.nextInt();
+	            
+	            try {
+	                int choice = input.nextInt();
+	                input.nextLine(); // Consume newline character
 
-	            switch (choice) {
-	            case 1:
-
-	                System.out.println("Which Restaurant?");
-	                System.out.println("Choose from 1 to 5");
-	                int ch = input.nextInt();
-	                if (ch >= 1 && ch <= 5) {
-	                    Restaurant selectedRestaurant = c.getRestaurant(ch - 1);
-	                    if (selectedRestaurant != null) {
-	                        double averageIncome = selectedRestaurant.averageOrder();
-	                        if (averageIncome != 0) {
-	                            System.out.println("Average income for " + selectedRestaurant.getName() + ": SAR " + averageIncome);
+	                switch (choice) {
+	                    case 1:
+	                        // Calculate average income for a restaurant
+	                        System.out.println("Which Restaurant? Choose from 1 to 5");
+	                        int ch = input.nextInt();
+	                        if (ch >= 1 && ch <= 5) {
+	                            Restaurant selectedRestaurant = c.getRestaurant(ch - 1);
+	                            if (selectedRestaurant != null) {
+	                                double averageIncome = selectedRestaurant.averageOrder();
+	                                if (averageIncome != 0) {
+	                                    System.out.println("Average income for " + selectedRestaurant.getName() + ": SAR " + averageIncome);
+	                                } else {
+	                                    System.out.println("No orders found for " + selectedRestaurant.getName());
+	                                }
+	                            } else {
+	                                throw new NullPointerException("Invalid restaurant number.");
+	                            }
 	                        } else {
-	                            System.out.println("No orders found for " + selectedRestaurant.getName());
+	                            throw new IllegalArgumentException("Invalid choice.");
 	                        }
-	                    } else {
-	                        System.out.println("Invalid restaurant number.");
-	                    }
-	                } else {
-	                    System.out.println("Invalid choice.");
-	                }
-	                break;
-
-	            case 2:
-
-	                System.out.println("Enter the details of the new order:");
-	                System.out.print("Restaurant Name: ");
-	                input.nextLine(); 
-	                String restaurantName = input.nextLine();
-	                Restaurant selectedRestaurant = c.findRestaurant(restaurantName);
-	                if (selectedRestaurant != null) {
-	                    System.out.print("Customer Name: ");
-	                    String customerName = input.nextLine();
-	                    System.out.print("Total Items: ");
-	                    int totalItems = input.nextInt();
-	                    System.out.print("Total Amount: ");
-	                    double totalAmount = input.nextDouble();
-	                    input.nextLine(); 
-	                    Order order;
-	                    System.out.print("Enter 1 for In-store, 2 for Delivery: ");
-	                    int orderType = input.nextInt();
-	                    if (orderType == 1) {
-	                        System.out.print("Cashier Name: ");
-	                        input.nextLine(); 
-	                        String cashierName = input.nextLine();
-	                        order = new InStore(restaurantName, customerName, totalItems, totalAmount, cashierName);
-	                    } else if (orderType == 2) {
-	                        System.out.print("App Name: ");
-	                        input.nextLine(); 
-	                        String appName = input.nextLine();
-	                        System.out.print("Driver Name: ");
-	                        String driverName = input.nextLine();
-	                        order = new Delivery(restaurantName, customerName, totalItems, totalAmount, appName, driverName);
-	                    } else {
-	                        System.out.println("Invalid order type.");
 	                        break;
-	                    }
-	                    selectedRestaurant.addOrder(order);
-	                    System.out.println("Order added successfully!");
-	               
-	                } else {
-	                    System.out.println("Restaurant not found.");
+
+	                    case 2:
+	                        // Add a new order
+	                        System.out.println("Enter the details of the new order:");
+	                        System.out.print("Restaurant Name: ");
+	                        String restaurantName = input.nextLine();
+	                        Restaurant selectedRestaurant = c.findRestaurant(restaurantName);
+	                        if (selectedRestaurant != null) {
+	                            if (selectedRestaurant.isFull()) {
+	                                throw new RestaurantOperationException("Cannot add order. Restaurant is full.");
+	                            }
+
+	                            System.out.print("Customer Name: ");
+	                            String customerName = input.nextLine();
+	                            System.out.print("Total Items: ");
+	                            int totalItems = input.nextInt();
+	                            System.out.print("Total Amount: ");
+	                            double totalAmount = input.nextDouble();
+	                            input.nextLine(); // Consume newline character
+	                            Order order;
+	                            System.out.print("Enter 1 for In-store, 2 for Delivery: ");
+	                            
+	                            int orderType = input.nextInt();
+	                            if (orderType == 1) {
+	                                System.out.print("Cashier Name: ");
+	                                input.nextLine();
+	                                String cashierName = input.nextLine();
+	                                order = new InStore(restaurantName, customerName, totalItems, totalAmount, cashierName);
+	                            } else if (orderType == 2) {
+	                                System.out.print("App Name: ");
+	                                input.nextLine();
+	                                String appName = input.nextLine();
+	                                System.out.print("Driver Name: ");
+	                                String driverName = input.nextLine();
+	                                order = new Delivery(restaurantName, customerName, totalItems, totalAmount, appName, driverName);
+	                            } else {
+	                                throw new IllegalArgumentException("Invalid order type.");
+	                            }
+	    	                    selectedRestaurant.addOrder(order);
+	    	                    System.out.println("Order added successfully!");
+	    	               
+	    	                } else {
+	    	                    System.out.println("Restaurant not found.");
+	    	                }
+	                    case 3:
+	                        // Search orders by worker name
+	                        System.out.println("Enter the name of the worker:");
+	                        String workerName = input.nextLine();
+	                        String[] ordersByWorker = Order.searchOrderByWorker(workerName);
+	                        if (ordersByWorker.length > 0) {
+	                            System.out.println("Orders found for worker " + workerName + ":");
+	                            for (String orderInfo : ordersByWorker) {
+	                                System.out.println(orderInfo);
+	                            }
+	                        } else {
+	                            System.out.println("No orders found for worker " + workerName);
+	                        }
+	                        break;
+
+	                    case 4:
+	                        // Print an order
+	                        System.out.print("Enter the name of the customer whose order you want to print: ");
+	                        String customerNameToPrint = input.nextLine();
+
+	                        boolean orderFound = false;
+	                        for (int i = 0; i < 5; i++) {
+	                            Restaurant restaurant = c.getRestaurant(i);
+	                            Order order = restaurant.findOrder(customerNameToPrint);
+	                            if (order != null) {
+	                                order.printOrder();
+	                                orderFound = true;
+	                                break;
+	                            }
+	                        }
+	                        if (!orderFound) {
+	                            System.out.println("No orders found for customer " + customerNameToPrint);
+	                        }
+	                        break;
+
+	                    case 5:
+	                        // Exit the program
+	                        System.out.println("Thank you for using this program, see you soon!");
+	                        exit = true;
+	                        break;
+
+	                    default:
+	                        System.out.println("Invalid choice. Please enter a number from 1 to 5.");
+	                        break;
 	                }
-	                break;
-	                case 3:
-	                    System.out.println("Enter the name of the worker:");
-	                    input.nextLine(); 
-	                    String workerName = input.nextLine();
-	                    String[] ordersByWorker = Order.searchOrderByWorker(workerName);
-	                    if (ordersByWorker.length > 0) {
-	                        System.out.println("Orders found for worker " + workerName + ":");
-	                        for (String orderInfo : ordersByWorker) {
-	                            System.out.println(orderInfo);
-	                        }
-	                    } else {
-	                        System.out.println("No orders found for worker " + workerName);
-	                    }
-	                    break;
-
-	                case 4:
-	                    System.out.print("Enter the name of the customer whose order you want to print: ");
-	                    input.nextLine(); 
-	                    String customerNameToPrint = input.nextLine();
-
-	                    boolean orderFound = false;
-	                    for (int i = 0; i < 5; i++) {
-	                        Restaurant restaurant = c.getRestaurant(i);
-	                        Order order = restaurant.findOrder(customerNameToPrint);
-	                        if (order != null) {
-	                            order.printOrder();
-	                            orderFound = true;
-	                            break; 
-	                        }
-	                    }
-	                    if (!orderFound) {
-	                        System.out.println("No orders found for customer " + customerNameToPrint);
-	                    }
-	                  break;
-	                case 5:
-
-	                	System.out.println("Thank you for using this program, see you soon!");
-	                    exit = true;
-	                    break;
-
-	                default:
-	                    System.out.println("Invalid choice. Please enter a number from 1 to 5.");
+	            } catch (NullPointerException e) {
+	                System.out.println(e.getMessage());
+	            } catch (RestaurantOperationException e) {
+					System.out.println(e.getMessage());
+				} catch (IllegalArgumentException e) {
+					System.out.println(e.getMessage());
+				} catch (InputMismatchException e) {
+	                System.out.println("Invalid input. Please enter a valid number.");
+	                input.nextLine(); // Clear invalid input
 	            }
 	        }
 	        try {
-	        c.SaveToFile("file name");\\we should write the link
-	        }catch(IOException e) {
-	        	e.printStackTrace();
-	        }
-	        input.close(); 
+		        c.SaveToFile("file name"); //we should write the link
+		        }catch(IOException e) {
+		        	e.printStackTrace();
+		        }
+	        input.close();
 	    }
 	}
