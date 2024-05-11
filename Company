@@ -37,7 +37,8 @@ public class Company {
 	        if (index >= 0 && index < restaurantCount) {
 	            return restaurants[index];
 	        } else {
-	            return null; // Return null if the index is out of bounds
+	            return null; }  // Return null if the index is out of bounds
+	        } 
 	      public void SaveToFile(String file) throws IOException {
 	    	File f = new File(file);
 	    	FileOutputStream R1 = new FileOutputStream(f);
@@ -48,6 +49,7 @@ public class Company {
 	    			R2.close();
 	    }
 	    public void LoadFromfile(String file) throws IOException{  
+	    	try {
 	        File f=new File(file);  
 	        FileInputStream r1= new FileInputStream(f);  
 	        ObjectInputStream r2=new ObjectInputStream(r1);  
@@ -60,18 +62,20 @@ public class Company {
 	            System.out.println(e);  
 	          
 	        }}  
+	       
 	          
 	    }catch(EOFException e) {  
 	        System.out.println(e);  
 	       r1.close();
 	       r2.close();
-	    }  
+	       }
+	    } catch (FileNotFoundException fnfe) {
+	    	System.out.println("Hey that file doesn't exist!");
+	    }
+	    }
 public String listRestaurant() {
 			
 			return null;
 		}
 	          
-	    }}
-		
-	
-	    
+	    }
