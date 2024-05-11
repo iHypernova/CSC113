@@ -77,7 +77,7 @@ class Company {
     private Restaurant[] restaurants;
     private int restaurantCount;
 
-    public Company(String name) {
+    Company(String name) {
         this.name = name;
         this.restaurants = new Restaurant[5];
     }
@@ -90,7 +90,7 @@ class Company {
         }
     }
 
-    public Restaurant getRestaurant(int index) {
+    public Restaurant getRestaurant() {
         if (index >= 0 && index < restaurantCount) {
             return restaurants[index];
         }
@@ -124,5 +124,35 @@ class Restaurant {
 class RestaurantException extends Exception {
     public RestaurantException(String message) {
         super(message);
+    }
+}
+public class RestaurantInputFrame extends JFrame {
+    private JTextField nameField;
+
+    public RestaurantInputFrame() {
+        super("Restaurant Management System");
+        setSize(400, 200);
+
+        JPanel inputPanel = new JPanel(new GridLayout(2, 2));
+        inputPanel.add(new JLabel("Restaurant Name:"));
+        nameField = new JTextField();
+        inputPanel.add(nameField);
+
+        JButton addButton = new JButton("Add Restaurant");
+        addButton.addActionListener(this::addRestaurant);
+        inputPanel.add(addButton);
+
+        getContentPane().add(inputPanel, BorderLayout.CENTER);
+    }
+
+    private void addRestaurant(ActionEvent e) {
+        String name = nameField.getText().trim();
+        if (!name.isEmpty()) {
+            Company.getInstance().addRestaurant(new Restaurant(name));
+            JOptionPane.showMessageDialog(this, "Restaurant added successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
+            nameField.setText("");
+        } else {
+            JOptionPane.showMessageDialog(this, "Please enter a valid restaurant name", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 }
