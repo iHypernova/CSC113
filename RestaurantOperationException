@@ -1,0 +1,5 @@
+class RestaurantOperationException extends Exception {
+	public RestaurantOperationException(String message) {
+        super(message);
+    }
+}
