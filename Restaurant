@@ -77,5 +77,11 @@ public class Restaurant {
 	        }
 	        return total / ordersCount;
 	    }
+		public boolean isFull() {
+			if (ordersCount>=2000) {
+				return true;
+			}
+			return false;
+		}
 	
 }
