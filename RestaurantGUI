@@ -29,7 +29,14 @@ class RestaurantInputFrame extends JFrame {
         inputPanel.add(nameField);
 
         JButton submitButton = new JButton("Add Restaurant");
-        submitButton.addActionListener(this::addRestaurant);
+        submitButton.addActionListener(e -> {
+			try {
+				addRestaurant(e);
+			} catch (RestaurantException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		});
         inputPanel.add(submitButton);
 
         resultArea = new JTextArea(10, 30);
@@ -40,7 +47,7 @@ class RestaurantInputFrame extends JFrame {
         getContentPane().add(new JScrollPane(resultArea), BorderLayout.CENTER);
     }
 
-    private void addRestaurant(ActionEvent e) {
+    private void addRestaurant(ActionEvent e)throws RestaurantException {
         String name = nameField.getText().trim();
         if (!name.isEmpty()) {
             Company company = new Company("MyCompany");
@@ -51,10 +58,31 @@ class RestaurantInputFrame extends JFrame {
                 resultArea.setText("Error: " + ex.getMessage());
             }
         } else {
-            resultArea.setText("Please enter a valid restaurant name.");
-        }
-    }
-}
+        	 JOptionPane.showMessageDialog(this, "Please enter a salary for FullTime or hours and rate for PartTime.");  
+             return;}  
+         }  
+
+         // Clear the input fields after adding an employee  
+       
+        
+        
+        
+     private void saveRestaurantToFile() {  
+         JFileChooser fileChooser = new JFileChooser();  
+         fileChooser.setDialogTitle("Specify a file to save");  
+         int userSelection = fileChooser.showSaveDialog(this);  
+   
+         if (userSelection == JFileChooser.APPROVE_OPTION) {  
+             File fileToSave = fileChooser.getSelectedFile();  
+             try {  
+            	 Restaurant.savetofile(fileToSave.getAbsolutePath());  
+                 JOptionPane.showMessageDialog(this, "Data saved to file: " + fileToSave.getAbsolutePath());  
+             } catch (IOException ex) {  
+                 JOptionPane.showMessageDialog(this, "Error saving to file: " + ex.getMessage());  
+             }  
+         }  
+     }
+
 
 class RestaurantDisplayFrame extends JFrame {
     private JTextArea displayArea;
@@ -70,12 +98,26 @@ class RestaurantDisplayFrame extends JFrame {
 
         getContentPane().add(new JScrollPane(displayArea), BorderLayout.CENTER);
     }
+
+	public JTextArea getDisplayArea() {
+		return displayArea;
+	}
+
+	public void setDisplayArea(JTextArea displayArea) {
+		this.displayArea = displayArea;
+	}
+
+	@Override
+	public String toString() {
+		return "RestaurantDisplayFrame [displayArea=" + displayArea + "]";
+	}
 }
 
 class Company {
     private String name;
     private Restaurant[] restaurants;
     private int restaurantCount;
+	private int index;
 
     Company(String name) {
         this.name = name;
@@ -109,50 +151,39 @@ class Company {
     }
 }
 
-class Restaurant {
+static class Restaurant {
     private String name;
 
     public Restaurant(String name) {
         this.name = name;
     }
 
-    public String getName() {
+    public static void savetofile(String absolutePath) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public String getName() {
         return name;
     }
 }
 
-class RestaurantException extends Exception {
-    public RestaurantException(String message) {
-        super(message);
-    }
+
+
+
+public JTextField getNameField() {
+	return nameField;
 }
-public class RestaurantInputFrame extends JFrame {
-    private JTextField nameField;
 
-    public RestaurantInputFrame() {
-        super("Restaurant Management System");
-        setSize(400, 200);
-
-        JPanel inputPanel = new JPanel(new GridLayout(2, 2));
-        inputPanel.add(new JLabel("Restaurant Name:"));
-        nameField = new JTextField();
-        inputPanel.add(nameField);
-
-        JButton addButton = new JButton("Add Restaurant");
-        addButton.addActionListener(this::addRestaurant);
-        inputPanel.add(addButton);
-
-        getContentPane().add(inputPanel, BorderLayout.CENTER);
-    }
-
-    private void addRestaurant(ActionEvent e) {
-        String name = nameField.getText().trim();
-        if (!name.isEmpty()) {
-            Company.getInstance().addRestaurant(new Restaurant(name));
-            JOptionPane.showMessageDialog(this, "Restaurant added successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
-            nameField.setText("");
-        } else {
-            JOptionPane.showMessageDialog(this, "Please enter a valid restaurant name", "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }
+public void setNameField(JTextField nameField) {
+	this.nameField = nameField;
 }
+
+public JTextArea getResultArea() {
+	return resultArea;
+}
+
+public void setResultArea(JTextArea resultArea) {
+	this.resultArea = resultArea;
+}
+    }
